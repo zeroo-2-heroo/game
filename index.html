@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zero to Hero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Changa:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f3e4c9; /* changed to a darker beige */
+      --card:#fff;
+      --ink:#0f172a;
+      --btn-orange:#ea580c;
+      --btn-green:#16a34a;
+      --btn-blue:#1d4ed8;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    /* beige patterned background */
+    body{
+      margin:0; font:500 16px/1.5 "Changa", system-ui, Segoe UI, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient( circle at 15% 15%, #0000 22px, #0000000f 23px 24px, #0000 25px ) 0 0/56px 56px,
+        var(--paper); /* this uses the new red color */
+      display:flex; align-items:center; justify-content:center; padding:22px;
+    }
+
+    .wrap{width:100%; max-width:980px}
+
+    .card{
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:0 10px 30px #00000018, 0 0 0 6px #0000000a inset;
+      padding:26px 26px 30px;
+      max-width:520px;      /* add this line */
+      margin: 0 auto;       /* center the card horizontally */
+    }
+
+    /* ---------- HEADER (image + title) ---------- */
+    .header{
+      display:flex;
+      align-items:center;                /* vertically align */
+      justify-content:center;            /* center as a unit */
+      gap:2px;                          /* reduced from 12px to 2px */
+      margin:0 0 12px;
+      flex-direction: row-reverse; /* add this line */
+    }
+    .header .titlebox{
+      flex:0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .header h1{
+      margin:0; font-family:"Bangers", system-ui;
+      font-size:clamp(32px, 6vw, 64px); letter-spacing:.5px;
+    }
+    .header .lead{
+      margin:4px 0 0; opacity:.85; font-size:clamp(14px,2.4vw,18px);
+    }
+    .hero-img{
+      width:min(110px,22vw);
+      height:auto;
+      display:block;
+      margin:0;               /* remove extra margin that causes gaps */
+    }
+
+    /* ---------- Buttons ---------- */
+    .stack{display:flex; flex-direction:column; gap:14px; margin-top:8px}
+    .btn{
+      display:flex; align-items:center; justify-content:center;
+      width:75%;
+      margin: 0 auto;
+      padding:16px; border-radius:16px; color:#fff;
+      font-weight:900; font-size:clamp(16px,2.6vw,22px);
+      border:0; text-decoration:none; cursor:pointer;
+      box-shadow:0 8px 0 #00000035, 0 18px 30px #00000018;
+      transition:transform .15s ease;
+      background: var(--btn-blue); /* make all buttons blue */
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn:active{transform:translateY(0)}
+    .btn.orange,
+    .btn.green,
+    .btn.blue {
+      background: var(--btn-blue);
+    }
+  </style>
+</head>
+
+<!-- Keep the Apps Script endpoint handy across pages -->
+<script>
+  (function () {
+    const PARAM = 'H2Z_ENDPOINT';
+    const def = 'https://script.google.com/macros/s/AKfycbyDxltzhBGlSsbZrttqIhmh3z_tiVcBZ7A1Obepw3vuxRLtb7WhtXVpa6xGSrzI7xjC/exec';
+    const u = new URL(location.href);
+    const override = u.searchParams.get('endpoint');
+    const current = localStorage.getItem(PARAM);
+    const final = override || current || def;
+    if (final !== current) localStorage.setItem(PARAM, final);
+  })();
+</script>
+
+<body>
+  <main class="wrap">
+    <section class="card">
+      <!-- Tight row: image + title -->
+      <div class="header">
+        <img class="hero-img" src="hero.png" alt="أنا بطل">
+        <div class="titlebox">
+          <h1>ZERO TO HERO</h1>
+          <p class="lead">اختر اليوم وسجل نقاط فريقك زيّ الأبطال.</p>
+        </div>
+        <img class="hero-img" src="hero.png" alt="أنا بطل">
+      </div>
+
+      <div class="stack">
+        <a class="btn orange" href="friday.html">الجمعة (Friday)</a>
+        <a class="btn green"  href="saturday.html">السبت (Saturday)</a>
+        <a class="btn blue"   href="view.html">عرض النتائج (View Scores)</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

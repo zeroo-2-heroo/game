@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>View — Hero to Zero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Changa:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f3e4c9;
+      --card:#fff;
+      --ink:#0f172a;
+      --btn-blue:#1d4ed8;
+      --border:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:500 16px/1.5 "Changa", system-ui, Segoe UI, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient( circle at 15% 15%, #0000 22px, #0000000f 23px 24px, #0000 25px ) 0 0/56px 56px,
+        var(--paper);
+      display:flex; align-items:center; justify-content:center; padding:22px;
+    }
+    .wrap{width:100%; max-width:720px}
+    h1{
+      margin:0 0 24px;
+      text-align:center;
+      font-size:clamp(24px,4vw,36px);
+      font-family:'Bangers', "Changa", system-ui, Arial;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:26px 26px 30px;
+      font-family:"Changa", system-ui, Arial;
+      box-shadow:0 10px 30px #00000018, 0 0 0 6px #0000000a inset;
+      max-width:900px;         /* increased width */
+      margin: 0 auto;
+      text-align:center;
+      color:var(--ink);
+    }
+    label{font-size:14px; opacity:.9}
+    select{
+      width:100%; padding:12px 14px; border-radius:12px;
+      border:1px solid var(--border); background:#f9fafb; color:#0f172a; font-size:16px;
+      margin-bottom:8px;
+      font-family:"Changa", system-ui, Arial;
+    }
+    .tableWrap{margin-top:20px; max-height:400px; overflow-y:auto}
+    h2{margin-top:20px; font-size:20px; border-bottom:1px solid #e5e7eb; padding-bottom:6px; color:var(--ink);}
+    h3{margin-top:12px; font-size:16px; opacity:.85; color:var(--ink);}
+    table{width:100%; border-collapse:collapse; margin-top:10px; background: #fff;}
+    th,td{padding:10px; border-bottom:1px dotted #e5e7eb; text-align:left; color:var(--ink);}
+    th{font-size:14px; opacity:.85}
+    .back{margin-top:12px; text-align:center; font-size:14px; opacity:.9}
+    .back a{color:#1e293b; text-decoration:underline}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Choose Your Team</h1>
+      <label for="teamSel">Teams</label>
+      <select id="teamSel">
+        <option value="">-- Select Team --</option>
+        <option>Team 1</option><option>Team 2</option><option>Team 3</option>
+        <option>Team 4</option><option>Team 5</option><option>Team 6</option>
+        <option>Team 7</option><option>Team 8</option><option>Team 9</option>
+        <option>Team 10</option>
+      </select>
+
+      <div id="tableWrap" class="tableWrap" style="display:none">
+        <!-- Friday section -->
+        <h2>Friday</h2>
+        <h3>Station</h3>
+        <table id="fridayStationTbl"><thead><tr><th>Game</th><th>Score</th></tr></thead><tbody></tbody></table>
+        <h3>Carnival</h3>
+        <table id="fridayCarnivalTbl"><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody></tbody></table>
+        <h3>Haflet el Summer</h3>
+        <table id="fridayHafletTbl"><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody></tbody></table>
+        <h3>Mahfozat</h3>
+        <table id="fridayMahfozatTbl"><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody></tbody></table>
+
+        <!-- Saturday section -->
+        <h2>Saturday</h2>
+        <h3>Station</h3>
+        <table id="satStationTbl"><thead><tr><th>Game</th><th>Score</th></tr></thead><tbody></tbody></table>
+        <h3>Kenz</h3>
+        <table id="satKenzTbl"><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody></tbody></table>
+        <h3>Mahfoozat</h3>
+        <table id="satMahfoozatTbl"><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+    <p class="back"><a href="index.html">← Back</a></p>
+  </main>
+
+<script>
+const ENDPOINT = localStorage.getItem('H2Z_ENDPOINT') 
+  || 'https://script.google.com/macros/s/AKfycbyDxltzhBGlSsbZrttqIhmh3z_tiVcBZ7A1Obepw3vuxRLtb7WhtXVpa6xGSrzI7xjC/exec';
+
+const teamSel = document.getElementById('teamSel');
+const tableWrap = document.getElementById('tableWrap');
+
+const fridayStationTbl = document.querySelector('#fridayStationTbl tbody');
+const fridayCarnivalTbl = document.querySelector('#fridayCarnivalTbl tbody');
+const fridayHafletTbl   = document.querySelector('#fridayHafletTbl tbody');
+const fridayMahfozatTbl = document.querySelector('#fridayMahfozatTbl tbody');
+
+const satStationTbl     = document.querySelector('#satStationTbl tbody');
+const satKenzTbl        = document.querySelector('#satKenzTbl tbody');
+const satMahfoozatTbl   = document.querySelector('#satMahfoozatTbl tbody');
+
+let totalEl = null; // element to display total
+
+// --- Helpers ---
+function clearTables(){
+  [fridayStationTbl, fridayCarnivalTbl, fridayHafletTbl, fridayMahfozatTbl,
+   satStationTbl, satKenzTbl, satMahfoozatTbl].forEach(t => t.innerHTML = '');
+  if(totalEl) totalEl.remove();
+}
+
+function keyOf(row, k){
+  return row[k] ?? row[k.toLowerCase()];
+}
+
+function latestByKey(rows){
+  const m = new Map();
+  rows.forEach(r => {
+    const day  = keyOf(r, 'Day');
+    const game = keyOf(r, 'Game');
+    const team = keyOf(r, 'Team');
+    const k = `${day}|${game}|${team}`;
+    m.set(k, r);
+  });
+  return Array.from(m.values());
+}
+
+async function fetchRows(){
+  const res = await fetch(ENDPOINT, { method: 'GET' });
+  if(!res.ok) throw new Error('Failed to load data');
+  const data = await res.json();  // [{Day, Game, Team, Score}, ...]
+  return latestByKey(data);
+}
+
+function fillForTeam(rows, team){
+  clearTables();
+  let total = 0;
+
+  // helper to add safely
+  function addScore(entry){
+    if(entry){
+      const val = Number(keyOf(entry,'Score'));
+      if(!isNaN(val)) total += val;
+      return val;
+    }
+    return '-';
+  }
+
+  // ----- FRIDAY -----
+  for(let g=1; g<=10; g++){
+    const label = `Station-Game${g}`;
+    const entry = rows.find(r => keyOf(r,'Day')==='Friday' && keyOf(r,'Game')===label && keyOf(r,'Team')===team);
+    const val = addScore(entry);
+    fridayStationTbl.innerHTML += `<tr><td>Game ${g}</td><td>${val}</td></tr>`;
+  }
+
+  const fCarn = rows.find(r => keyOf(r,'Day')==='Friday' && keyOf(r,'Game')==='Carnival' && keyOf(r,'Team')===team);
+  fridayCarnivalTbl.innerHTML = `<tr><td>Carnival</td><td>${addScore(fCarn)}</td></tr>`;
+
+  const fHaf = rows.find(r => keyOf(r,'Day')==='Friday' && keyOf(r,'Game')==='Haflet el Summer' && keyOf(r,'Team')===team);
+  fridayHafletTbl.innerHTML = `<tr><td>Haflet el Summer</td><td>${addScore(fHaf)}</td></tr>`;
+
+  const fMah = rows.find(r => keyOf(r,'Day')==='Friday' && keyOf(r,'Game')==='Mahfozat' && keyOf(r,'Team')===team);
+  fridayMahfozatTbl.innerHTML = `<tr><td>Mahfozat</td><td>${addScore(fMah)}</td></tr>`;
+
+  // ----- SATURDAY -----
+  for(let g=1; g<=5; g++){
+    const label = `Station-Game${g}`;
+    const entry = rows.find(r => keyOf(r,'Day')==='Saturday' && keyOf(r,'Game')===label && keyOf(r,'Team')===team);
+    const val = addScore(entry);
+    satStationTbl.innerHTML += `<tr><td>Game ${g}</td><td>${val}</td></tr>`;
+  }
+
+  const sKenz = rows.find(r => keyOf(r,'Day')==='Saturday' && keyOf(r,'Game')==='Kenz' && keyOf(r,'Team')===team);
+  satKenzTbl.innerHTML = `<tr><td>Kenz</td><td>${addScore(sKenz)}</td></tr>`;
+
+  const sMah = rows.find(r => keyOf(r,'Day')==='Saturday' && keyOf(r,'Game')==='Mahfoozat' && keyOf(r,'Team')===team);
+  satMahfoozatTbl.innerHTML = `<tr><td>Mahfoozat</td><td>${addScore(sMah)}</td></tr>`;
+
+  // ----- TOTAL -----
+  totalEl = document.createElement('h2');
+  totalEl.textContent = `Total Score: ${total}`;
+  document.querySelector('.card').appendChild(totalEl);
+}
+
+// --- Hook up UI ---
+teamSel.addEventListener('change', async () => {
+  const team = teamSel.value;
+  if(!team){ tableWrap.style.display = 'none'; return; }
+  tableWrap.style.display = 'block';
+
+  try {
+    const rows = await fetchRows();  // always fetch latest
+    fillForTeam(rows, team);
+  } catch (err) {
+    console.error(err);
+    alert('Could not load scores. Check your internet or the sheet deployment permissions.');
+    tableWrap.style.display = 'none';
+  }
+});
+</script>
+
+
+</body>
+</html>

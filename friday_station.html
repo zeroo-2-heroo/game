@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Friday Station — Hero to Zero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Changa:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f3e4c9; /* darker beige, matching index.html */
+      --card:#fff;
+      --ink:#0f172a;
+      --btn-blue:#1d4ed8;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:500 16px/1.5 "Changa", system-ui, Segoe UI, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient( circle at 15% 15%, #0000 22px, #0000000f 23px 24px, #0000 25px ) 0 0/56px 56px,
+        var(--paper);
+      display:flex; align-items:center; justify-content:center; padding:22px;
+    }
+    .wrap{width:100%; max-width:980px}
+    .card{
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:0 10px 30px #00000018, 0 0 0 6px #0000000a inset;
+      padding:26px 26px 30px;
+      max-width:420px;
+      margin: 0 auto;
+      text-align:center;
+    }
+    h1{margin:0 0 24px; text-align:center; font-size:clamp(24px,4vw,36px)}
+    .stack{display:flex; flex-direction:column; gap:14px}
+    label{font-size:14px; opacity:.9; display:block; margin-bottom:4px;}
+    select{
+      width:100%; padding:12px 14px; border-radius:12px;
+      border:1px solid #e5e7eb; background:#f9fafb; color:#0f172a; font-size:16px;
+      margin-bottom:8px;
+    }
+    .actions{display:flex; flex-direction:column; gap:10px; margin-top:6px}
+    button{
+      width:75%; max-width:440px; margin:0 auto;
+      padding:16px; border:0; border-radius:16px;
+      color:#fff; font-size:clamp(16px,2.8vw,20px); font-weight:700;
+      cursor:pointer; transition:transform .15s ease, opacity .15s ease;
+      display:block;
+      background: var(--btn-blue);
+    }
+    button:hover{transform:translateY(-1px)}
+    button:active{transform:translateY(0); opacity:.9}
+    .back{margin-top:12px; text-align:center; font-size:14px; opacity:.9}
+    .back a{color:#1e293b; text-decoration:underline}
+    @media (max-width:360px){
+      .wrap{max-width:94vw}
+      .card{padding:14px 4vw;}
+      button{border-radius:10px; padding:12px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Friday Station</h1>
+      <div class="stack">
+        <div>
+          <label for="gameSel">Games</label>
+          <select id="gameSel">
+            <option value="1">Game 1</option>
+            <option value="2">Game 2</option>
+            <option value="3">Game 3</option>
+            <option value="4">Game 4</option>
+            <option value="5">Game 5</option>
+            <option value="6">Game 6</option>
+            <option value="7">Game 7</option>
+            <option value="8">Game 8</option>
+            <option value="9">Game 9</option>
+            <option value="10">Game 10</option>
+          </select>
+        </div>
+        <div>
+          <label for="teamSel">Teams</label>
+          <select id="teamSel">
+            <option>Team 1</option><option>Team 2</option><option>Team 3</option>
+            <option>Team 4</option><option>Team 5</option><option>Team 6</option>
+            <option>Team 7</option><option>Team 8</option><option>Team 9</option>
+            <option>Team 10</option>
+          </select>
+        </div>
+        <div>
+          <label for="scoreSel">Score</label>
+          <select id="scoreSel">
+            <!-- 50 → 200 step 5 -->
+            <option>50</option><option>55</option><option>60</option><option>65</option>
+            <option>70</option><option>75</option><option>80</option><option>85</option>
+            <option>90</option><option>95</option><option>100</option><option>105</option>
+            <option>110</option><option>115</option><option>120</option><option>125</option>
+            <option>130</option><option>135</option><option>140</option><option>145</option>
+            <option>150</option><option>155</option><option>160</option><option>165</option>
+            <option>170</option><option>175</option><option>180</option><option>185</option>
+            <option>190</option><option>195</option><option>200</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button id="saveBtn">Save</button>
+        </div>
+      </div>
+    </section>
+    <p class="back"><a href="friday.html">← Back to Friday</a></p>
+  </main>
+
+<script>
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyDxltzhBGlSsbZrttqIhmh3z_tiVcBZ7A1Obepw3vuxRLtb7WhtXVpa6xGSrzI7xjC/exec';
+
+const day = 'Friday';
+const gameSel  = document.getElementById('gameSel');
+const teamSel  = document.getElementById('teamSel');
+const scoreSel = document.getElementById('scoreSel');
+const saveBtn  = document.getElementById('saveBtn');
+
+async function saveScore() {
+  const params = new URLSearchParams({
+    day,
+    game: `Station-Game${gameSel.value}`,
+    team: teamSel.value,
+    score: String(scoreSel.value)
+  });
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
+
+  try {
+    const res = await fetch(ENDPOINT, { method: 'POST', body: params });
+    let ok = true;
+    try { ok = (await res.json()).status === 'success'; } catch { ok = res.ok; }
+    alert(ok ? 'Saved ✅' : 'Failed to save. Please try again.');
+  } catch (err) {
+    try {
+      await fetch(ENDPOINT, { method: 'POST', body: params, mode: 'no-cors' });
+      alert('Saved (sent) ✅ — check the sheet or /exec JSON.');
+    } catch (e2) {
+      console.error(e2);
+      alert('Failed to save. Please try again.');
+    }
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
+  }
+}
+
+saveBtn.addEventListener('click', saveScore);
+</script>
+
+
+
+</body>
+</html>

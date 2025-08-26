@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Friday — Hero to Zero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Changa:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f3e4c9; /* darker beige, matching index.html */
+      --card:#fff;
+      --ink:#0f172a;
+      --btn-blue:#1d4ed8;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:500 16px/1.5 "Changa", system-ui, Segoe UI, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient( circle at 15% 15%, #0000 22px, #0000000f 23px 24px, #0000 25px ) 0 0/56px 56px,
+        var(--paper);
+      display:flex; align-items:center; justify-content:center; padding:22px;
+    }
+    .wrap{width:100%; max-width:980px}
+    .card{
+      background:var(--card);
+      border-radius:22px;
+      box-shadow:0 10px 30px #00000018, 0 0 0 6px #0000000a inset;
+      padding:26px 26px 30px;
+      max-width:420px;
+      margin: 0 auto;
+      text-align:center;
+    }
+    h1{margin:0 0 24px; font-size:clamp(24px,4vw,36px)}
+    .stack{display:flex; flex-direction:column; gap:14px; margin-top:8px}
+    button, .btn {
+      display:flex; align-items:center; justify-content:center;
+      width:75%; margin:0 auto;
+      padding:16px; border-radius:16px; color:#fff;
+      font-weight:900; font-size:clamp(16px,2.6vw,22px);
+      border:0; text-decoration:none; cursor:pointer;
+      box-shadow:0 8px 0 #00000035, 0 18px 30px #00000018;
+      transition:transform .15s ease;
+      background: var(--btn-blue);
+    }
+    button:hover, .btn:hover {transform:translateY(-2px);}
+    button:active, .btn:active {transform:translateY(0);}
+    .back{margin-top:10px; font-size:14px; opacity:.9}
+    .back a{color:#1e293b; text-decoration:underline}
+    @media (max-width:360px){
+      .wrap{max-width:94vw}
+      .card{padding:14px 4vw;}
+      button{border-radius:10px; padding:12px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Friday Events</h1>
+      <div class="stack">
+        <button onclick="location.href='friday_station.html'">Station</button>
+        <button onclick="location.href='friday_carnival.html'">Carnival</button>
+        <button onclick="location.href='friday_summer.html'">Haflet el Summer</button>
+        <button onclick="location.href='friday_mahfozat.html'">Mahfozat</button>
+      </div>
+      <p class="back"><a href="index.html">← Back</a></p>
+    </section>
+  </main>
+</body>
+</html>
